@@ -1,0 +1,8 @@
+WARNING:root:==================== DJRC massive upload bot executed =====================
+WARNING:root:Script triggered at 2018-04-25 10:54:15.410000
+WARNING:root:Data captured. Excel succesfully read
+WARNING:root:Number of merchants for screening : 28
+WARNING:root:Query finished, information brought from PayU Databases
+WARNING:root:Dataframe created. Proceding to create file
+WARNING:root:Process Finished. File created with the name DJRC2018-04-25.xlsx
+WARNING:root:==================== DJRC massive upload bot finished. Please contact support for any issues with execution. =====================
