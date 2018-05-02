@@ -5,8 +5,12 @@ import logging
 import sys
 import datetime
 import os
-logging.basicConfig(filename='queries.log', filemode='a', level=logging.DEBUG)
-#Connecting to DB for Merchant information
+now=datetime.datetime.now()
+today = datetime.date.today()
+loggername='queries-'+str(today)+'.log'
+logging.basicConfig(format='%(asctime)s:%(levelname)s:%(name)s:%(message)s', filename=loggername, filemode='a+',level=logging.DEBUG)
+
+#Connecting to DB for Merchant Information
 try:
     conn = db.connect(dbname='pol_v4', user='readonly', host='10.50.49.27', password='YdbLByGopWPS4zYi8PIR')
     cursor = conn.cursor()
@@ -14,7 +18,6 @@ except:
     logging.error('Cannot connect to database. Please run this script again')
     sys.exit()
 
-now=datetime.datetime.now()
 logging.warning('==================== DJRC massive upload bot executed =====================')
 logging.warning('Script triggered at %(now)s',{'now':now})
 
@@ -37,7 +40,7 @@ df['CaseID']=df['UserId'].astype(str) + '_PayULatam_'+ str(today)
 users=df['UserId'].tolist()
 
 logging.warning('Number of merchants for screening : %(users)s', {'users':str(len(users))})
-#List to save information from queries
+#List to save.warningrmation from queries
 
 temp = []
 for index in range(0, len(users)):
@@ -53,14 +56,10 @@ for index in range(0, len(users)):
     else:
         temp.append(pd.Series([np.nan]))
 
-logging.warning('Query finished, information brought from PayU Databases')
+logging.warning('Query finished. Information brought from PayU Databases')
 
-#Create a dataframe with the information from database
+#Create a dataframe with the.warningrmation from database
 query = pd.DataFrame(temp, columns=['User','Document', 'IdType','Telephone','City','Address','RelationshipName','Country'])
-filename = 'temp' + str(today) + '.xlsx'
-writer = pd.ExcelWriter(filename)
-query.to_excel(writer, index=False)
-writer.save()
 #Replacing Countries according DJ regulations
 query['Country'].replace({'AR':'Argentina','PE':'Peru','CL':'Chile','CO':'Colombia','MX':'Mexico','PA':'Panama',
                           'BR':'Brazil','PL':'Poland','US':'United States','IT':'Italy','EE':'Estonia','GB':'United Kingdom',
@@ -72,7 +71,7 @@ query['IdType'].replace({'CI':'National ID', 'CC':'National ID', 'CE':'National 
                'EIN':'Others (Entity)', 'NIF':'Others (Entity)', 'NIT':'Others (Entity)', 'RFC':'Others (Entity)',
                'RIF':'Others (Entity)', 'RUC':'Others (Entity)', 'RUT':'Others (Entity)','IFE':'Others (Individual)',
                'IDC':'Others (Individual)','PP':'Passport No.','SSN':'Social Security No.'}, inplace=True)
-#Concatenate previous dataframe information with the information from the queries
+#Concatenate previous dataframe.warningrmation with the.warningrmation from the queries
 df=pd.concat([df,query], axis=1)
 
 #Create additional Columns to complete the file
@@ -94,7 +93,7 @@ df['IsClient']=str('True')
 df['Screening']=str('Active')
 df['Service-DJRC']=str('yes')
 df['Service-DJNews']=str('no')
-#Create columns that have no information or non relevant for the screening
+#Create columns that have no.warningrmation or non relevant for the screening
 Addons=pd.DataFrame(columns=['Middle Name', 'Surname', 'Gender', 'DoB', 'AlternativeName', 'Occupation', 'Notes1', 'Notes2',
                     'AssociationType', 'IndustrySector', 'DocumentLinks', 'AddressURL', 'State', 'PostalCode'])
 df=pd.concat([df,Addons],axis=1)
@@ -105,7 +104,18 @@ df=df[['RowAction','CaseID','CaseName','CaseOwner','Requestor','Phone','Email','
        'Gender','DoB','AlternativeName','Occupation','IdType','Document','Notes1','Notes2','AssociationType','IndustrySector',
        'IsClient','Screening','Priority','DocumentLinks','Country','Address','AddressURL','Telephone','City','State','PostalCode',
        'Service-DJRC','Service-DJNews']]
-df.loc[-1] = ['investigation.inv_row_action.False.string','case.inv_request_id.False.string','case.inv_inv_name.False.string',
+df2 = pd.DataFrame(columns=['RowAction','CaseID','CaseName','CaseOwner','Requestor','Phone','Email','Priority','Segment','Comment','CaseStatus',
+       'MatchRelationship','RelationshipType','RelationShipID','RelationshipName','First Name','Middle Name','Surname',
+       'Gender','DoB','AlternativeName','Occupation','IdType','Document','Notes1','Notes2','AssociationType','IndustrySector',
+       'IsClient','Screening','Priority','DocumentLinks','Country','Address','AddressURL','Telephone','City','State','PostalCode',
+       'Service-DJRC','Service-DJNews'])
+df2.loc[0] = ['Row Action', 'Case ID', 'Case Name' , 'Case Owner', 'Requestor', 'Phone', 'Email', 'Priority',
+              'Segment', 'Comment', 'Case Status', 'Match Relationship','Relationship Type', 'Relationship ID',
+              'Relationship Name', ' First Name', 'Middle Name', 'Surname', 'Gender', 'Date of Birth','Alternative Name',
+              'Occupation', 'Identification Type', 'Identification Value', 'Notes 1', 'Notes 2', 'Association Type',
+              'Industry Sector', 'Is Client', 'Screening', 'Priority', 'Document Links', 'Country', 'Address Line',
+              'Address URL', 'Phone', 'City', 'State', 'Postal Code', 'Service - DJ R&C', 'Service - DJ News']
+df2.loc[1]=['investigation.inv_row_action.False.string','case.inv_request_id.False.string','case.inv_inv_name.False.string',
               'case.inv_investigator.False.string','case.inv_requestor_name.False.string','case.inv_requestor_phone.False.string',
               'case.inv_requestor_email.False.string','case.inv_priority.False.string','case.inv_queue.False.string',
               'case.inv_comment.False.string','case.inv_status.False.string','case.MatchEntity.False.bool',
@@ -119,19 +129,10 @@ df.loc[-1] = ['investigation.inv_row_action.False.string','case.inv_request_id.F
               'address.ent_address_address.False.string','address.ent_address_address_5.False.string','address.ent_address_address_6.False.string',
               'address.ent_address_city.False.string','address.ent_address_state.False.string','address.ent_address_zip.False.string',
               'service.165.False.string','service.44.False.string']
-df.loc[-2] = ['Row Action', 'Case ID', 'Case Name' , 'Case Owner', 'Requestor', 'Phone', 'Email', 'Priority',
-              'Segment', 'Comment', 'Case Status', 'Match Relationship','Relationship Type', 'Relationship ID',
-              'Relationship Name', ' First Name', 'Middle Name', 'Surname', 'Gender', 'Date of Birth','Alternative Name',
-              'Occupation', 'Identification Type', 'Identification Value', 'Notes 1', 'Notes 2', 'Association Type',
-              'Industry Sector', 'Is Client', 'Screening', 'Priority', 'Document Links', 'Country', 'Address Line',
-              'Address URL', 'Phone', 'City', 'State', 'Postal Code', 'Service - DJ R&C', 'Service - DJ News']
-
+df=pd.concat([df2,df])
 logging.warning('Dataframe created. Proceding to create file')
-df.index=df.index +1
-df=df.sort_index()
-df.drop(index,inplace=True)
 #Save file with the name DJRC and date itno excel
-filename = 'DJRC' + str(today) + '.xlsx'
+filename = 'bulk-import-PayULatam-' + str(today) + '.xlsx'
 writer = pd.ExcelWriter(filename)
 df.to_excel(writer,sheet_name='case', index=False, header=False)
 writer.save()

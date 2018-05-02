@@ -6,7 +6,7 @@ import sys
 import datetime
 import os
 try:
-    conn = db.connect(dbname='pol_v4', user='readonly', host='172.18.35.22', password='YdbLByGopWPS4zYi8PIR')
+    conn = db.connect(dbname='pol_v4', user='readonly', host='10.50.49.27', password='YdbLByGopWPS4zYi8PIR')
     cursor = conn.cursor()
 except:
     logging.error('Cannot connect to database. Please run this script again')
