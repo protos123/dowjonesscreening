@@ -12,7 +12,7 @@ logging.basicConfig(format='%(asctime)s:%(levelname)s:%(name)s:%(message)s', fil
 
 #Connecting to DB for Merchant Information
 try:
-    conn = db.connect(dbname='pol_v4', user='readonly', host='10.50.49.27', password='YdbLByGopWPS4zYi8PIR')
+    conn = db.connect(dbname='pol_v4', user='readonly', host='address', password='sdasdasdsadsadas')
     cursor = conn.cursor()
 except:
     logging.error('Cannot connect to database. Please run this script again')
